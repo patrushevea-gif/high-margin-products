@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard, FlaskConical, Radio, Settings, Database,
-  GitBranch, Search, Bell
+  LayoutDashboard, FlaskConical, Settings, Database,
+  GitBranch, Network, GitCompareArrows, Users2, Wand2
 } from "lucide-react";
 import { CommandPalette } from "@/components/layout/CommandPalette";
 import { useState } from "react";
@@ -13,8 +13,12 @@ import { useState } from "react";
 const NAV = [
   { href: "/", label: "Mission Control", icon: LayoutDashboard },
   { href: "/hypotheses", label: "Гипотезы", icon: FlaskConical },
+  { href: "/compare", label: "Сравнение", icon: GitCompareArrows },
+  { href: "/graph", label: "Knowledge Graph", icon: Network },
   { href: "/sources", label: "Источники", icon: Database },
   { href: "/process", label: "Карта процесса", icon: GitBranch },
+  { href: "/committee", label: "Комитет", icon: Users2 },
+  { href: "/counterfactual", label: "А что если...", icon: Wand2 },
   { href: "/agents", label: "Агент-студия", icon: Settings },
 ];
 
