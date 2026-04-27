@@ -1,0 +1,21 @@
+{
+  "name": "compass",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "packages/ui",
+    "packages/shared-types"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "turbo": "^2.3.0",
+    "prettier": "^3.4.0",
+    "typescript": "^5.7.0"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
