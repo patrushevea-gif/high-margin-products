@@ -1,9 +1,11 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.schemas.hypothesis import HypothesisRead, HypothesisCreate, HypothesisUpdate
 from app.repositories.hypothesis import HypothesisRepository
+from app.services.integrations.obsidian import get_obsidian
+from app.services.integrations.bitrix24 import get_bitrix24
 
 router = APIRouter()
 
@@ -34,15 +36,27 @@ async def get_hypothesis(hypothesis_id: UUID, db: AsyncSession = Depends(get_db)
 
 @router.patch("/{hypothesis_id}", response_model=HypothesisRead)
 async def update_hypothesis(
-    hypothesis_id: UUID, body: HypothesisUpdate, db: AsyncSession = Depends(get_db)
+    hypothesis_id: UUID,
+    body: HypothesisUpdate,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db),
 ) -> HypothesisRead:
     repo = HypothesisRepository(db)
-    return await repo.update(hypothesis_id, body)
+    result = await repo.update(hypothesis_id, body)
+    if body.status == "accepted":
+        background_tasks.add_task(_on_accepted, result.model_dump())
+    return result
+
+
+async def _on_accepted(h: dict) -> None:
+    """Export to Obsidian + create Bitrix24 task when hypothesis is accepted."""
+    await get_obsidian().export_hypothesis(h)
+    await get_bitrix24().create_task_from_hypothesis(h)
 
 
 @router.post("/{hypothesis_id}/advance")
 async def advance_stage(hypothesis_id: UUID, db: AsyncSession = Depends(get_db)) -> dict[str, str]:
-    """Advance hypothesis to the next pipeline stage."""
+    """Queue hypothesis for next pipeline stage evaluation."""
     repo = HypothesisRepository(db)
     h = await repo.get_or_404(hypothesis_id)
     return {"hypothesis_id": str(h.id), "status": "queued"}
