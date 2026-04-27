@@ -1,11 +1,13 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, Query, BackgroundTasks
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.schemas.hypothesis import HypothesisRead, HypothesisCreate, HypothesisUpdate
 from app.repositories.hypothesis import HypothesisRepository
 from app.services.integrations.obsidian import get_obsidian
 from app.services.integrations.bitrix24 import get_bitrix24
+from app.models.hypothesis import HypothesisEvaluation
 
 router = APIRouter()
 
@@ -52,6 +54,28 @@ async def _on_accepted(h: dict) -> None:
     """Export to Obsidian + create Bitrix24 task when hypothesis is accepted."""
     await get_obsidian().export_hypothesis(h)
     await get_bitrix24().create_task_from_hypothesis(h)
+
+
+@router.get("/{hypothesis_id}/evaluations")
+async def list_evaluations(hypothesis_id: UUID, db: AsyncSession = Depends(get_db)) -> list[dict]:
+    """Return immutable Time Machine snapshots for this hypothesis."""
+    result = await db.execute(
+        select(HypothesisEvaluation)
+        .where(HypothesisEvaluation.hypothesis_id == hypothesis_id)
+        .order_by(HypothesisEvaluation.evaluated_at.desc())
+    )
+    rows = result.scalars().all()
+    return [
+        {
+            "id": str(r.id),
+            "agent_name": r.agent_name,
+            "run_id": str(r.run_id) if r.run_id else None,
+            "evaluated_at": r.evaluated_at.isoformat(),
+            "snapshot": r.snapshot,
+            "delta": r.delta,
+        }
+        for r in rows
+    ]
 
 
 @router.post("/{hypothesis_id}/advance")

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, FlaskConical, Settings, Database,
-  GitBranch, Search, Network, GitCompareArrows, Users2
+  GitBranch, Network, GitCompareArrows, Users2, Wand2
 } from "lucide-react";
 import { CommandPalette } from "@/components/layout/CommandPalette";
 import { useState } from "react";
@@ -18,6 +18,7 @@ const NAV = [
   { href: "/sources", label: "Источники", icon: Database },
   { href: "/process", label: "Карта процесса", icon: GitBranch },
   { href: "/committee", label: "Комитет", icon: Users2 },
+  { href: "/counterfactual", label: "А что если...", icon: Wand2 },
   { href: "/agents", label: "Агент-студия", icon: Settings },
 ];
 

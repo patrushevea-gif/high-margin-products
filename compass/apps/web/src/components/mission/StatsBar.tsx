@@ -14,13 +14,14 @@ export function StatsBar({ hypotheses }: Props) {
     (h) => !["accepted", "rejected", "parked", "draft"].includes(h.status)
   ).length;
   const committeReady = hypotheses.filter((h) => h.status === "committee_ready").length;
+  const warRoom = hypotheses.filter((h) => h.war_room_active).length;
 
   const stats = [
     { label: "Всего", value: total, color: "var(--text-primary)" },
     { label: "В работе", value: inProgress, color: "var(--info)" },
     { label: "К комитету", value: committeReady, color: "var(--accent)" },
     { label: "Принято", value: accepted, color: "var(--success)" },
-    { label: "Отвергнуто", value: rejected, color: "var(--danger)" },
+    { label: "War Room", value: warRoom, color: warRoom > 0 ? "#ef4444" : "var(--text-muted)" },
   ];
 
   return (
