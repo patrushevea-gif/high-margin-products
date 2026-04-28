@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Zap, RefreshCw, ArrowRight, Archive, Check } from "lucide-react";
 import { HypothesisDNA } from "./HypothesisDNA";
 import { EvaluationTabs } from "./EvaluationTabs";
+import { AgentChat } from "./AgentChat";
 
 interface Props {
   id: string;
@@ -138,8 +139,16 @@ export function HypothesisWorkbench({ id }: Props) {
         </div>
 
         {/* Center: tabs */}
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-hidden">
           <EvaluationTabs hypothesis={h} />
+        </div>
+
+        {/* Right: agent chat */}
+        <div
+          className="w-72 flex-shrink-0 border-l overflow-hidden"
+          style={{ borderColor: "var(--border)" }}
+        >
+          <AgentChat hypothesisId={h.id} />
         </div>
       </div>
     </div>
