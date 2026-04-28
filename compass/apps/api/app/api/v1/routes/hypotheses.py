@@ -1,13 +1,17 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, Query, BackgroundTasks
+from fastapi.responses import StreamingResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic import BaseModel
+import json
 from app.core.database import get_db
 from app.schemas.hypothesis import HypothesisRead, HypothesisCreate, HypothesisUpdate
 from app.repositories.hypothesis import HypothesisRepository
 from app.services.integrations.obsidian import get_obsidian
 from app.services.integrations.bitrix24 import get_bitrix24
 from app.models.hypothesis import HypothesisEvaluation
+from app.services.ai_gateway import get_gateway
 
 router = APIRouter()
 
@@ -76,6 +80,61 @@ async def list_evaluations(hypothesis_id: UUID, db: AsyncSession = Depends(get_d
         }
         for r in rows
     ]
+
+
+AGENT_PERSONAS: dict[str, str] = {
+    "synthesizer": "Ты Синтезатор — старший продуктовый аналитик. Отвечаешь кратко, по делу, на русском.",
+    "devils_advocate": "Ты Адвокат Дьявола — критически атакуешь идеи, ищешь слабые места. Отвечаешь на русском.",
+    "market_analyst": "Ты Рыночный Аналитик — эксперт по рынкам ЛКМ и смежным. Отвечаешь на русском.",
+    "economist": "Ты Экономист — эксперт по юнит-экономике и финансовому моделированию. Отвечаешь на русском.",
+    "tech_analyst": "Ты Технический Аналитик — эксперт по производственной реализуемости. Отвечаешь на русском.",
+}
+
+
+class ChatRequest(BaseModel):
+    message: str
+    agent: str = "synthesizer"
+    history: list[dict] = []
+
+
+@router.post("/{hypothesis_id}/chat")
+async def chat_with_agent(
+    hypothesis_id: UUID,
+    body: ChatRequest,
+    db: AsyncSession = Depends(get_db),
+) -> StreamingResponse:
+    repo = HypothesisRepository(db)
+    h = await repo.get_or_404(hypothesis_id)
+    h_dict = h.model_dump()
+
+    persona = AGENT_PERSONAS.get(body.agent, AGENT_PERSONAS["synthesizer"])
+    context = (
+        f"Гипотеза: {h_dict['title']}\n"
+        f"Домен: {h_dict['domain']} | Статус: {h_dict['status']}\n"
+        f"Описание: {h_dict.get('short_description', '')}\n"
+        f"Оценка: {h_dict.get('overall_score')} | Уверенность: {h_dict.get('confidence_score')}\n"
+        f"Технический профиль: {json.dumps(h_dict.get('technical'), ensure_ascii=False)}\n"
+        f"Рыночный профиль: {json.dumps(h_dict.get('market'), ensure_ascii=False)}\n"
+        f"Экономика: {json.dumps(h_dict.get('economics'), ensure_ascii=False)}\n"
+        f"Риски: {json.dumps(h_dict.get('risks'), ensure_ascii=False)}"
+    )
+    system = f"{persona}\n\nКонтекст гипотезы:\n{context}"
+
+    messages = list(body.history) + [{"role": "user", "content": body.message}]
+    gateway = get_gateway()
+
+    async def generate():
+        async for chunk in gateway.stream(
+            model="claude-sonnet-4-6",
+            system=system,
+            messages=messages,
+            temperature=0.5,
+            max_tokens=1024,
+            agent_name=f"chat_{body.agent}",
+        ):
+            yield chunk
+
+    return StreamingResponse(generate(), media_type="text/plain")
 
 
 @router.post("/{hypothesis_id}/advance")
