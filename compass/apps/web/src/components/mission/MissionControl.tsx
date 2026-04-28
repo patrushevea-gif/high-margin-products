@@ -8,6 +8,7 @@ import { HypothesisFunnel } from "./HypothesisFunnel";
 import { ActivityFeed } from "./ActivityFeed";
 import { AttentionList } from "./AttentionList";
 import { StatsBar } from "./StatsBar";
+import { useRealtimeTable } from "@/hooks/useRealtimeTable";
 
 const PIPELINE_STAGES = [
   "draft", "signal_processed", "tech_evaluated",
@@ -16,6 +17,8 @@ const PIPELINE_STAGES = [
 ];
 
 export function MissionControl() {
+  useRealtimeTable("hypotheses", { invalidateKeys: [["hypotheses"]] });
+
   const { data: hypotheses = [], isLoading } = useQuery<Hypothesis[]>({
     queryKey: ["hypotheses"],
     queryFn: () => api.get<Hypothesis[]>("/hypotheses?limit=200"),

@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, FlaskConical, Settings, Database,
-  GitBranch, Network, GitCompareArrows, Users2, Wand2
+  GitBranch, Network, GitCompareArrows, Users2, Wand2, LogOut, Search
 } from "lucide-react";
 import { CommandPalette } from "@/components/layout/CommandPalette";
 import { useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 const NAV = [
   { href: "/", label: "Mission Control", icon: LayoutDashboard },
@@ -24,7 +25,14 @@ const NAV = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [cmdOpen, setCmdOpen] = useState(false);
+
+  const handleLogout = async () => {
+    if (supabase) await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
+  };
 
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: "var(--background)" }}>
@@ -70,7 +78,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
 
         {/* Bottom */}
-        <div className="px-2 py-3 border-t" style={{ borderColor: "var(--border)" }}>
+        <div className="px-2 py-3 border-t space-y-0.5" style={{ borderColor: "var(--border)" }}>
           <button
             onClick={() => setCmdOpen(true)}
             className="flex items-center gap-2 px-2.5 py-2 rounded text-sm w-full transition-colors hover:bg-background-raised"
@@ -78,10 +86,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           >
             <Search size={14} strokeWidth={1.5} />
             <span>Поиск</span>
-            <kbd className="ml-auto text-xs px-1 py-0.5 rounded" style={{ background: "var(--raised)", color: "var(--text-muted)" }}>
+            <kbd className="ml-auto text-xs px-1 py-0.5 rounded"
+              style={{ background: "var(--raised)", color: "var(--text-muted)" }}>
               ⌘K
             </kbd>
           </button>
+          {supabase && (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-2.5 py-2 rounded text-sm w-full transition-colors hover:bg-background-raised"
+              style={{ color: "var(--text-muted)" }}
+            >
+              <LogOut size={14} strokeWidth={1.5} />
+              <span>Выйти</span>
+            </button>
+          )}
         </div>
       </aside>
 

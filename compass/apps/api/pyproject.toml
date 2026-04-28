@@ -21,6 +21,7 @@ dependencies = [
     "python-multipart>=0.0.12",
     "pgvector>=0.3.6",
     "sentence-transformers>=3.3.0",
+    "langgraph>=0.2.0",
 ]
 
 [tool.uv]
@@ -30,6 +31,8 @@ dev-dependencies = [
     "pytest-cov>=6.0.0",
     "mypy>=1.13.0",
     "ruff>=0.8.0",
+    "aiosqlite>=0.20.0",
+    "pytest-mock>=3.14.0",
 ]
 
 [tool.ruff]
