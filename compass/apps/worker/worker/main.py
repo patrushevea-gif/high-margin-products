@@ -24,6 +24,7 @@ from worker.pipeline import (
     task_scout_and_process,
 )
 from worker.resurrection import task_scan_resurrection_triggers
+from worker.graph_runner import run_graph_pipeline
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -52,6 +53,11 @@ async def shutdown(ctx: dict) -> None:
 
 # ─── Cron jobs ───────────────────────────────────────────────────────────────
 
+async def task_graph_pipeline(ctx: dict, hypothesis_id: str) -> dict:
+    """Run the full LangGraph pipeline for one hypothesis."""
+    return await run_graph_pipeline(ctx, hypothesis_id)
+
+
 async def cron_scout_lkm(ctx: dict) -> None:
     """Scout + full pipeline for LKM domain, every 6 hours."""
     logger.info("Cron: scout LKM")
@@ -77,6 +83,7 @@ class WorkerSettings:
         task_run_full_pipeline,
         task_scout_and_process,
         task_scan_resurrection_triggers,
+        task_graph_pipeline,      # LangGraph-based full pipeline
     ]
     cron_jobs = [
         cron(cron_scout_lkm, hour={0, 6, 12, 18}, minute=0),
