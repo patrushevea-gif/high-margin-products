@@ -1,4 +1,4 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieMethodsServer } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const PUBLIC_PATHS = ["/login", "/auth/callback"];
@@ -6,7 +6,6 @@ const PUBLIC_PATHS = ["/login", "/auth/callback"];
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Always allow public paths
   if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
@@ -15,21 +14,20 @@ export async function middleware(request: NextRequest) {
     request: { headers: request.headers },
   });
 
-  // Skip auth check if Supabase not configured (local dev)
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!supabaseUrl || !supabaseKey) {
-    return response;
-  }
+  if (!supabaseUrl || !supabaseKey) return response;
+
+  const cookieMethods: CookieMethodsServer = {
+    getAll: () => request.cookies.getAll(),
+    setAll: (toSet) =>
+      toSet.forEach(({ name, value, options }) =>
+        response.cookies.set(name, value, options)
+      ),
+  };
 
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      getAll: () => request.cookies.getAll(),
-      setAll: (toSet) =>
-        toSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options)
-        ),
-    },
+    cookies: cookieMethods,
   });
 
   const { data: { user } } = await supabase.auth.getUser();
