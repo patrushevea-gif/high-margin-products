@@ -27,7 +27,7 @@ export default function NewHypothesisPage() {
     onError: () => toast.error("Ошибка при создании гипотезы"),
   });
 
-  const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const set = (k: string, v: string) => setForm((f: typeof form) => ({ ...f, [k]: v }));
 
   const valid = form.title.trim().length >= 5 && form.short_description.trim().length >= 10;
 

@@ -8,6 +8,7 @@ import {
   GitBranch, Network, GitCompareArrows, Users2, Wand2, LogOut, Search
 } from "lucide-react";
 import { CommandPalette } from "@/components/layout/CommandPalette";
+import type { ReactNode } from "react";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -23,7 +24,7 @@ const NAV = [
   { href: "/agents", label: "Агент-студия", icon: Settings },
 ];
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [cmdOpen, setCmdOpen] = useState(false);
