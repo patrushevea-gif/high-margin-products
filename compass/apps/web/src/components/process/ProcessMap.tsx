@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  ReactFlow, Background, Controls, Handle, Position,
+  ReactFlow, Background, Controls, MarkerType, Handle, Position,
   type Node, type Edge, type NodeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -68,7 +68,7 @@ function AgentNode({ data }: NodeProps) {
       <div style={{ color: "var(--text-muted)" }}>{data.desc as string}</div>
       {data.runs != null && (
         <div className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>
-          {data.runs} запусков
+          {data.runs as number} запусков
         </div>
       )}
       <Handle type="source" position={Position.Right} style={{ background: s.border }} />
@@ -114,7 +114,7 @@ export function ProcessMap() {
     ...e,
     animated: liveMode,
     style: { stroke: "var(--border)" },
-    markerEnd: { type: "ArrowClosed" as const, color: "var(--border)" },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "var(--border)" },
   }));
 
   return (
