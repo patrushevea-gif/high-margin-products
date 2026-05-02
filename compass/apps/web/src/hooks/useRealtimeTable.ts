@@ -25,7 +25,6 @@ export function useRealtimeTable(table: string, opts: Options) {
     const channel = supabase
       .channel(`realtime:${table}`)
       .on(
-        // @ts-expect-error — supabase types require literal "postgres_changes"
         "postgres_changes",
         { event: opts.event ?? "*", schema: "public", table },
         () => {
