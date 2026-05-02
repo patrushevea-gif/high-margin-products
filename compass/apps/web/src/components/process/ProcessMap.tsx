@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  ReactFlow, Background, Controls, Handle, Position,
+  ReactFlow, Background, Controls, MarkerType, Handle, Position,
   type Node, type Edge, type NodeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -114,7 +114,7 @@ export function ProcessMap() {
     ...e,
     animated: liveMode,
     style: { stroke: "var(--border)" },
-    markerEnd: { type: "ArrowClosed" as const, color: "var(--border)" },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "var(--border)" },
   }));
 
   return (

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { api } from "@/lib/api";
 import {
-  ReactFlow, Background, Controls, MiniMap,
+  ReactFlow, Background, Controls, MiniMap, MarkerType,
   Handle, Position, type Node, type Edge, type NodeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -113,7 +113,7 @@ export function KnowledgeGraph() {
     source: e.source,
     target: e.target,
     style: { stroke: "var(--border)" },
-    markerEnd: { type: "ArrowClosed" as const, color: "var(--border)" },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "var(--border)" },
   }));
 
   const onNodeClick = useCallback((_: any, node: Node) => {
