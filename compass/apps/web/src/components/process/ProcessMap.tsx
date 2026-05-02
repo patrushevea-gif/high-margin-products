@@ -68,7 +68,7 @@ function AgentNode({ data }: NodeProps) {
       <div style={{ color: "var(--text-muted)" }}>{data.desc as string}</div>
       {data.runs != null && (
         <div className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>
-          {data.runs} запусков
+          {data.runs as number} запусков
         </div>
       )}
       <Handle type="source" position={Position.Right} style={{ background: s.border }} />
