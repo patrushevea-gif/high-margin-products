@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { AgentSettings } from "@/types";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 const MODE_PRESETS = {
   conservative: { label: "Conservative", description: "Низкие температуры, строгий отсев" },
@@ -16,6 +17,18 @@ const MODE_PRESETS = {
 export function AgentStudio() {
   const qc = useQueryClient();
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
+  const [activePreset, setActivePreset] = useState<string | null>(null);
+
+  const presetMutation = useMutation({
+    mutationFn: (mode: string) =>
+      api.post<{ mode: string; updated: string[] }>(`/agents/presets/${mode}`, {}),
+    onSuccess: (data) => {
+      setActivePreset(data.mode);
+      toast.success(`Пресет "${data.mode}" применён к ${data.updated.length} агентам`);
+      qc.invalidateQueries({ queryKey: ["agent-settings"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
   const [editedPrompt, setEditedPrompt] = useState("");
   const [editedTemp, setEditedTemp] = useState(0.3);
   const [editedModel, setEditedModel] = useState("");
@@ -75,12 +88,19 @@ export function AgentStudio() {
             {Object.entries(MODE_PRESETS).map(([key, preset]) => (
               <button
                 key={key}
-                className="text-xs px-2 py-1 rounded border hover:bg-background-raised transition-colors text-left"
-                style={{ borderColor: "var(--border)", color: "var(--text-secondary)" }}
-                onClick={() => toast.info(`Пресет "${preset.label}" — в разработке`)}
+                disabled={presetMutation.isPending}
+                className="text-xs px-2 py-1 rounded border transition-colors text-left"
+                style={{
+                  borderColor: activePreset === key ? "var(--accent)" : "var(--border)",
+                  color: activePreset === key ? "var(--accent)" : "var(--text-secondary)",
+                  background: activePreset === key ? "rgba(124,58,237,0.08)" : "transparent",
+                }}
+                onClick={() => presetMutation.mutate(key)}
                 title={preset.description}
               >
-                {preset.label}
+                {presetMutation.isPending && presetMutation.variables === key
+                  ? "..."
+                  : preset.label}
               </button>
             ))}
           </div>

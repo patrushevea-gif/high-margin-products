@@ -67,12 +67,14 @@ export function HypothesisCompare() {
 
   const summaryMutation = useMutation({
     mutationFn: () =>
-      api.post<{ text: string }>("/counterfactual/analyze", {
+      api.post<{ summary: string; cost_usd: string }>("/hypotheses/compare/summary", {
         hypothesis_ids: Array.from(selectedIds),
-        scenario: { name: "compare_summary", changes: [] },
       }),
-    onSuccess: () => setSummary("Синтетический сравнительный анализ будет добавлен в следующей итерации."),
-    onError: () => setSummary("Синтетическое сравнение — в разработке."),
+    onSuccess: (data) => {
+      setSummary(data.summary);
+      toast.success(`Анализ готов · $${parseFloat(data.cost_usd).toFixed(4)}`);
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const toggle = (id: string) => {

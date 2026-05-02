@@ -106,9 +106,18 @@ class AIGateway:
             agent_name, model, input_tokens, output_tokens, cost, elapsed_ms,
         )
 
+        # raw_content preserves the full content array (text + tool_use blocks)
+        # needed for proper multi-turn tool-use conversations
+        raw_content = [b.model_dump() for b in response.content]
+
         return {
             "text": "\n".join(text_blocks),
-            "tool_calls": tool_calls,
+            "tool_calls": [
+                {"id": b.id, "name": b.name, "input": b.input}
+                for b in response.content
+                if b.type == "tool_use"
+            ],
+            "raw_content": raw_content,
             "stop_reason": response.stop_reason,
             "usage": {"input": input_tokens, "output": output_tokens, "cost_usd": cost},
             "call_id": call_id,
