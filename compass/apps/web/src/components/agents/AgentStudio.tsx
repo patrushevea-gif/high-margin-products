@@ -5,7 +5,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { AgentSettings } from "@/types";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
 const MODE_PRESETS = {
   conservative: { label: "Conservative", description: "Низкие температуры, строгий отсев" },
