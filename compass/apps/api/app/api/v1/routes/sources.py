@@ -2,6 +2,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
+from app.core.redis import get_arq_pool
 from app.schemas.source import SourceRead, SourceCreate, SourceUpdate
 from app.repositories.source import SourceRepository
 
@@ -36,7 +37,16 @@ async def update_source(
 
 @router.post("/{source_id}/trigger")
 async def trigger_source(source_id: UUID, db: AsyncSession = Depends(get_db)) -> dict[str, str]:
-    """Manually trigger a source scrape run."""
+    """Manually trigger a source scrape run via arq worker."""
     repo = SourceRepository(db)
-    await repo.get_or_404(source_id)
-    return {"source_id": str(source_id), "status": "queued"}
+    src = await repo.get_or_404(source_id)
+    try:
+        arq = await get_arq_pool()
+        job = await arq.enqueue_job(
+            "task_scout_and_process",
+            domain=src.domain,
+        )
+        job_id = job.job_id if job else "unknown"
+    except Exception:
+        job_id = "unavailable"
+    return {"source_id": str(source_id), "status": "queued", "job_id": job_id}
