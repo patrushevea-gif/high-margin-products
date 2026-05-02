@@ -1,0 +1,6 @@
+{
+  "framework": "nextjs",
+  "installCommand": "cd compass/apps/web && npm install",
+  "buildCommand": "cd compass/apps/web && npm run build",
+  "outputDirectory": "compass/apps/web/.next"
+}
