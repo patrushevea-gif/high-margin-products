@@ -1,0 +1,310 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="700" viewBox="0 0 1600 700">
+  <defs>
+    <pattern id="dotgrid" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="11" cy="11" r="0.9" fill="#18182a"/>
+    </pattern>
+
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000" flood-opacity="0.55"/>
+    </filter>
+    <filter id="glow-amber" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feFlood flood-color="#f59e0b" flood-opacity="0.22" result="colour"/>
+      <feComposite in="colour" in2="blur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <linearGradient id="grad-amber-node" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Arrow markers -->
+    <marker id="arr-orange" markerWidth="7" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#f97316"/>
+    </marker>
+    <marker id="arr-cyan" markerWidth="7" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#06b6d4"/>
+    </marker>
+    <marker id="arr-purple-light" markerWidth="7" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#8b5cf6"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="7" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arr-violet" markerWidth="7" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#7c3aed"/>
+    </marker>
+    <marker id="arr-amber" markerWidth="7" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#f59e0b"/>
+    </marker>
+    <marker id="arr-green" markerWidth="7" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#10b981"/>
+    </marker>
+    <marker id="arr-teal" markerWidth="7" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#14b8a6"/>
+    </marker>
+    <marker id="arr-rose" markerWidth="7" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#f43f5e"/>
+    </marker>
+  </defs>
+
+  <!-- ── Background ── -->
+  <rect width="1600" height="700" fill="#0c0c14"/>
+  <rect width="1600" height="700" fill="url(#dotgrid)"/>
+
+  <!-- ── Stage zone tints ── -->
+  <rect x="26"   y="110" width="178" height="490" rx="12" fill="#f97316" opacity="0.025"/>
+  <rect x="214"  y="110" width="188" height="490" rx="12" fill="#06b6d4" opacity="0.025"/>
+  <rect x="412"  y="110" width="188" height="490" rx="12" fill="#8b5cf6" opacity="0.025"/>
+  <rect x="606"  y="110" width="188" height="490" rx="12" fill="#3b82f6" opacity="0.03"/>
+  <rect x="806"  y="110" width="188" height="490" rx="12" fill="#7c3aed" opacity="0.035"/>
+  <rect x="1006" y="110" width="188" height="490" rx="12" fill="#f59e0b" opacity="0.04"/>
+  <rect x="1206" y="110" width="188" height="490" rx="12" fill="#10b981" opacity="0.03"/>
+  <rect x="1404" y="110" width="188" height="490" rx="12" fill="#14b8a6" opacity="0.025"/>
+
+  <!-- ── Stage dividers ── -->
+  <line x1="204"  y1="110" x2="204"  y2="600" stroke="#1f1f30" stroke-width="1" stroke-dasharray="3,5"/>
+  <line x1="402"  y1="110" x2="402"  y2="600" stroke="#1f1f30" stroke-width="1" stroke-dasharray="3,5"/>
+  <line x1="600"  y1="110" x2="600"  y2="600" stroke="#1f1f30" stroke-width="1" stroke-dasharray="3,5"/>
+  <line x1="798"  y1="110" x2="798"  y2="600" stroke="#1f1f30" stroke-width="1" stroke-dasharray="3,5"/>
+  <line x1="998"  y1="110" x2="998"  y2="600" stroke="#1f1f30" stroke-width="1" stroke-dasharray="3,5"/>
+  <line x1="1198" y1="110" x2="1198" y2="600" stroke="#1f1f30" stroke-width="1" stroke-dasharray="3,5"/>
+  <line x1="1396" y1="110" x2="1396" y2="600" stroke="#1f1f30" stroke-width="1" stroke-dasharray="3,5"/>
+
+  <!-- ── Stage labels ── -->
+  <text x="115"  y="98" text-anchor="middle" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" font-weight="700" fill="#f97316" opacity="0.65" letter-spacing="0.1em">ТРИГГЕР</text>
+  <text x="308"  y="98" text-anchor="middle" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" font-weight="700" fill="#06b6d4" opacity="0.65" letter-spacing="0.1em">РАЗВЕДКА</text>
+  <text x="506"  y="98" text-anchor="middle" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" font-weight="700" fill="#8b5cf6" opacity="0.65" letter-spacing="0.1em">ФИЛЬТРАЦИЯ</text>
+  <text x="700"  y="98" text-anchor="middle" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" font-weight="700" fill="#3b82f6" opacity="0.65" letter-spacing="0.1em">АНАЛИЗ</text>
+  <text x="900"  y="98" text-anchor="middle" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" font-weight="700" fill="#7c3aed" opacity="0.65" letter-spacing="0.1em">СИНТЕЗ</text>
+  <text x="1100" y="98" text-anchor="middle" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" font-weight="700" fill="#f59e0b" opacity="0.9"  letter-spacing="0.1em">КРИТИКА</text>
+  <text x="1300" y="98" text-anchor="middle" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" font-weight="700" fill="#10b981" opacity="0.65" letter-spacing="0.1em">РЕШЕНИЕ</text>
+  <text x="1498" y="98" text-anchor="middle" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" font-weight="700" fill="#14b8a6" opacity="0.65" letter-spacing="0.1em">ГИПОТЕЗЫ</text>
+
+  <!-- ── Devil's advocate ambient glow (behind connections) ── -->
+  <ellipse cx="1100" cy="352" rx="110" ry="60" fill="#f59e0b" opacity="0.07" filter="url(#glow-amber)"/>
+
+  <!-- ══════════════════════════════════════════
+       CONNECTIONS  (drawn before nodes)
+  ══════════════════════════════════════════ -->
+
+  <!-- trigger → scout -->
+  <path d="M188,352 L228,352" stroke="#f97316" stroke-width="2" fill="none" marker-end="url(#arr-cyan)" opacity="0.8"/>
+
+  <!-- scout → curator -->
+  <path d="M376,352 L418,352" stroke="#06b6d4" stroke-width="2" fill="none" marker-end="url(#arr-purple-light)" opacity="0.8"/>
+
+  <!-- curator → tech_analyst -->
+  <path d="M566,352 C622,352 554,182 608,182" stroke="#8b5cf6" stroke-width="1.5" fill="none" stroke-dasharray="none" marker-end="url(#arr-blue)" opacity="0.65"/>
+
+  <!-- curator → market_analyst -->
+  <path d="M566,352 C604,352 570,292 608,292" stroke="#8b5cf6" stroke-width="1.5" fill="none" marker-end="url(#arr-blue)" opacity="0.65"/>
+
+  <!-- curator → economist -->
+  <path d="M566,352 C604,352 570,412 608,412" stroke="#8b5cf6" stroke-width="1.5" fill="none" marker-end="url(#arr-blue)" opacity="0.65"/>
+
+  <!-- curator → compliance -->
+  <path d="M566,352 C622,352 554,522 608,522" stroke="#8b5cf6" stroke-width="1.5" fill="none" marker-end="url(#arr-blue)" opacity="0.65"/>
+
+  <!-- tech_analyst → synthesizer -->
+  <path d="M756,182 C808,182 804,352 818,352" stroke="#3b82f6" stroke-width="1.5" fill="none" marker-end="url(#arr-violet)" opacity="0.65"/>
+
+  <!-- market_analyst → synthesizer -->
+  <path d="M756,292 C808,292 806,352 818,352" stroke="#3b82f6" stroke-width="1.5" fill="none" marker-end="url(#arr-violet)" opacity="0.65"/>
+
+  <!-- economist → synthesizer -->
+  <path d="M756,412 C808,412 806,352 818,352" stroke="#3b82f6" stroke-width="1.5" fill="none" marker-end="url(#arr-violet)" opacity="0.65"/>
+
+  <!-- compliance → synthesizer -->
+  <path d="M756,522 C808,522 804,352 818,352" stroke="#3b82f6" stroke-width="1.5" fill="none" marker-end="url(#arr-violet)" opacity="0.65"/>
+
+  <!-- synthesizer → devils_advocate (thicker, prominent) -->
+  <path d="M966,352 L1018,352" stroke="#7c3aed" stroke-width="2.5" fill="none" marker-end="url(#arr-amber)" opacity="0.9"/>
+
+  <!-- devils_advocate → committee -->
+  <path d="M1166,352 L1218,352" stroke="#f59e0b" stroke-width="2.5" fill="none" marker-end="url(#arr-green)" opacity="0.9"/>
+
+  <!-- committee → hypothesis approved -->
+  <path d="M1366,352 C1406,352 1390,262 1432,262" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#arr-green)" opacity="0.75"/>
+
+  <!-- committee → hypothesis revision -->
+  <path d="M1366,352 L1432,352" stroke="#14b8a6" stroke-width="1.5" fill="none" marker-end="url(#arr-teal)" opacity="0.75"/>
+
+  <!-- committee → hypothesis rejected -->
+  <path d="M1366,352 C1406,352 1390,442 1432,442" stroke="#f43f5e" stroke-width="1.5" fill="none" marker-end="url(#arr-rose)" opacity="0.75"/>
+
+  <!-- ══════════════════════════════════════════
+       NODES
+       Node layout: x=left, y=top, w=148, h=66
+       Center: x+74, y+33
+  ══════════════════════════════════════════ -->
+
+  <!-- ── TRIGGER: x=41, y=319 ── -->
+  <g filter="url(#shadow)">
+    <rect x="41"  y="319" width="148" height="66" rx="10" fill="#101020" stroke="#f97316" stroke-width="1.5"/>
+    <rect x="41"  y="319" width="5"   height="66" rx="3"  fill="#f97316"/>
+    <circle cx="68" cy="352" r="15" fill="rgba(249,115,22,0.12)"/>
+    <text x="68" y="358" text-anchor="middle" font-size="16" font-family="sans-serif">⚡</text>
+    <text x="94" y="344" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="12" font-weight="700" fill="#f1f5f9">Запрос</text>
+    <text x="94" y="360" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#64748b">Новый продукт</text>
+    <circle cx="189" cy="352" r="4" fill="#f97316" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- ── SCOUT: x=228, y=319 ── -->
+  <g filter="url(#shadow)">
+    <rect x="228" y="319" width="148" height="66" rx="10" fill="#101020" stroke="#06b6d4" stroke-width="1.5"/>
+    <rect x="228" y="319" width="5"   height="66" rx="3"  fill="#06b6d4"/>
+    <circle cx="255" cy="352" r="15" fill="rgba(6,182,212,0.12)"/>
+    <text x="255" y="358" text-anchor="middle" font-size="16" font-family="sans-serif">🔍</text>
+    <text x="281" y="344" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="12" font-weight="700" fill="#f1f5f9">Scout</text>
+    <text x="281" y="360" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#64748b">Разведчик</text>
+    <circle cx="228" cy="352" r="4" fill="#06b6d4" stroke="#0c0c14" stroke-width="2"/>
+    <circle cx="376" cy="352" r="4" fill="#06b6d4" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- ── CURATOR: x=418, y=319 ── -->
+  <g filter="url(#shadow)">
+    <rect x="418" y="319" width="148" height="66" rx="10" fill="#101020" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect x="418" y="319" width="5"   height="66" rx="3"  fill="#8b5cf6"/>
+    <circle cx="445" cy="352" r="15" fill="rgba(139,92,246,0.12)"/>
+    <text x="445" y="358" text-anchor="middle" font-size="16" font-family="sans-serif">🗂</text>
+    <text x="471" y="344" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="12" font-weight="700" fill="#f1f5f9">Curator</text>
+    <text x="471" y="360" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#64748b">Куратор</text>
+    <circle cx="418" cy="352" r="4" fill="#8b5cf6" stroke="#0c0c14" stroke-width="2"/>
+    <circle cx="566" cy="352" r="4" fill="#8b5cf6" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- ── TECH_ANALYST: x=608, y=149 ── -->
+  <g filter="url(#shadow)">
+    <rect x="608" y="149" width="148" height="66" rx="10" fill="#101020" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect x="608" y="149" width="5"   height="66" rx="3"  fill="#3b82f6"/>
+    <circle cx="635" cy="182" r="15" fill="rgba(59,130,246,0.12)"/>
+    <text x="635" y="188" text-anchor="middle" font-size="16" font-family="sans-serif">⚗</text>
+    <text x="661" y="174" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="11" font-weight="700" fill="#f1f5f9">TechAnalyst</text>
+    <text x="661" y="190" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#64748b">Технолог</text>
+    <circle cx="608" cy="182" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+    <circle cx="756" cy="182" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- ── MARKET_ANALYST: x=608, y=259 ── -->
+  <g filter="url(#shadow)">
+    <rect x="608" y="259" width="148" height="66" rx="10" fill="#101020" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect x="608" y="259" width="5"   height="66" rx="3"  fill="#3b82f6"/>
+    <circle cx="635" cy="292" r="15" fill="rgba(59,130,246,0.12)"/>
+    <text x="635" y="298" text-anchor="middle" font-size="16" font-family="sans-serif">📊</text>
+    <text x="661" y="284" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="11" font-weight="700" fill="#f1f5f9">MarketAnalyst</text>
+    <text x="661" y="300" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#64748b">Маркетолог</text>
+    <circle cx="608" cy="292" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+    <circle cx="756" cy="292" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- ── ECONOMIST: x=608, y=379 ── -->
+  <g filter="url(#shadow)">
+    <rect x="608" y="379" width="148" height="66" rx="10" fill="#101020" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect x="608" y="379" width="5"   height="66" rx="3"  fill="#3b82f6"/>
+    <circle cx="635" cy="412" r="15" fill="rgba(59,130,246,0.12)"/>
+    <text x="635" y="418" text-anchor="middle" font-size="16" font-family="sans-serif">💰</text>
+    <text x="661" y="404" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="11" font-weight="700" fill="#f1f5f9">Economist</text>
+    <text x="661" y="420" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#64748b">Финансист</text>
+    <circle cx="608" cy="412" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+    <circle cx="756" cy="412" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- ── COMPLIANCE: x=608, y=489 ── -->
+  <g filter="url(#shadow)">
+    <rect x="608" y="489" width="148" height="66" rx="10" fill="#101020" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect x="608" y="489" width="5"   height="66" rx="3"  fill="#3b82f6"/>
+    <circle cx="635" cy="522" r="15" fill="rgba(59,130,246,0.12)"/>
+    <text x="635" y="528" text-anchor="middle" font-size="16" font-family="sans-serif">⚖</text>
+    <text x="661" y="514" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="11" font-weight="700" fill="#f1f5f9">Compliance</text>
+    <text x="661" y="530" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#64748b">Комплаенс</text>
+    <circle cx="608" cy="522" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+    <circle cx="756" cy="522" r="4" fill="#3b82f6" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- ── SYNTHESIZER: x=818, y=319 ── -->
+  <g filter="url(#shadow)">
+    <rect x="818" y="319" width="148" height="66" rx="10" fill="#101020" stroke="#7c3aed" stroke-width="2"/>
+    <rect x="818" y="319" width="5"   height="66" rx="3"  fill="#7c3aed"/>
+    <circle cx="845" cy="352" r="15" fill="rgba(124,58,237,0.15)"/>
+    <text x="845" y="358" text-anchor="middle" font-size="16" font-family="sans-serif">🧬</text>
+    <text x="871" y="344" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="12" font-weight="700" fill="#f1f5f9">Synthesizer</text>
+    <text x="871" y="360" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#64748b">Синтезатор</text>
+    <circle cx="818" cy="352" r="4" fill="#7c3aed" stroke="#0c0c14" stroke-width="2"/>
+    <circle cx="966" cy="352" r="4" fill="#7c3aed" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- ── DEVIL'S ADVOCATE (highlighted): x=1018, y=319 ── -->
+  <!-- outer amber ring glow -->
+  <rect x="1010" y="311" width="164" height="82" rx="14" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.25"/>
+  <rect x="1004" y="305" width="176" height="94" rx="16" fill="none" stroke="#f59e0b" stroke-width="0.5" opacity="0.12"/>
+  <g filter="url(#shadow)">
+    <rect x="1018" y="319" width="148" height="66" rx="10" fill="#16110a" stroke="#f59e0b" stroke-width="2"/>
+    <!-- Amber inner gradient overlay -->
+    <rect x="1018" y="319" width="148" height="66" rx="10" fill="url(#grad-amber-node)"/>
+    <rect x="1018" y="319" width="5"   height="66" rx="3"  fill="#f59e0b"/>
+    <circle cx="1045" cy="352" r="15" fill="rgba(245,158,11,0.18)"/>
+    <text x="1045" y="358" text-anchor="middle" font-size="16" font-family="sans-serif">🔥</text>
+    <text x="1071" y="343" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="11" font-weight="700" fill="#fde68a">DevilsAdvocate</text>
+    <text x="1071" y="359" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#92400e">Адвокат дьявола</text>
+    <circle cx="1018" cy="352" r="4" fill="#f59e0b" stroke="#0c0c14" stroke-width="2"/>
+    <circle cx="1166" cy="352" r="4" fill="#f59e0b" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- ── COMMITTEE: x=1218, y=319 ── -->
+  <g filter="url(#shadow)">
+    <rect x="1218" y="319" width="148" height="66" rx="10" fill="#101020" stroke="#10b981" stroke-width="2"/>
+    <rect x="1218" y="319" width="5"   height="66" rx="3"  fill="#10b981"/>
+    <circle cx="1245" cy="352" r="15" fill="rgba(16,185,129,0.12)"/>
+    <text x="1245" y="358" text-anchor="middle" font-size="16" font-family="sans-serif">🏛</text>
+    <text x="1271" y="344" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="12" font-weight="700" fill="#f1f5f9">Committee</text>
+    <text x="1271" y="360" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#64748b">Комитет</text>
+    <circle cx="1218" cy="352" r="4" fill="#10b981" stroke="#0c0c14" stroke-width="2"/>
+    <circle cx="1366" cy="352" r="4" fill="#10b981" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- ══════════════════════════════════════════
+       HYPOTHESIS OUTPUTS
+  ══════════════════════════════════════════ -->
+
+  <!-- group bracket -->
+  <rect x="1424" y="222" width="164" height="260" rx="10" fill="none" stroke="#14b8a6" stroke-width="1" stroke-dasharray="4,4" opacity="0.25"/>
+  <text x="1506" y="214" text-anchor="middle" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="9" font-weight="600" fill="#14b8a6" opacity="0.5" letter-spacing="0.08em">РЕЗУЛЬТАТ</text>
+
+  <!-- Approved: x=1432, y=229 -->
+  <g filter="url(#shadow)">
+    <rect x="1432" y="229" width="148" height="66" rx="10" fill="#091810" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="1432" y="229" width="5"   height="66" rx="3"  fill="#10b981"/>
+    <circle cx="1459" cy="262" r="15" fill="rgba(16,185,129,0.15)"/>
+    <text x="1459" y="268" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="900" fill="#10b981">✓</text>
+    <text x="1485" y="254" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="11" font-weight="700" fill="#6ee7b7">Принята</text>
+    <text x="1485" y="270" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#065f46">Гипотеза утверждена</text>
+    <circle cx="1432" cy="262" r="4" fill="#10b981" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- Revision: x=1432, y=319 -->
+  <g filter="url(#shadow)">
+    <rect x="1432" y="319" width="148" height="66" rx="10" fill="#091418" stroke="#14b8a6" stroke-width="1.5"/>
+    <rect x="1432" y="319" width="5"   height="66" rx="3"  fill="#14b8a6"/>
+    <circle cx="1459" cy="352" r="15" fill="rgba(20,184,166,0.12)"/>
+    <text x="1459" y="359" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="900" fill="#14b8a6">↻</text>
+    <text x="1485" y="344" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="11" font-weight="700" fill="#99f6e4">На доработку</text>
+    <text x="1485" y="360" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#134e4a">Требует уточнений</text>
+    <circle cx="1432" cy="352" r="4" fill="#14b8a6" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- Rejected: x=1432, y=409 -->
+  <g filter="url(#shadow)">
+    <rect x="1432" y="409" width="148" height="66" rx="10" fill="#180a0c" stroke="#f43f5e" stroke-width="1.5"/>
+    <rect x="1432" y="409" width="5"   height="66" rx="3"  fill="#f43f5e"/>
+    <circle cx="1459" cy="442" r="15" fill="rgba(244,63,94,0.12)"/>
+    <text x="1459" y="449" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="900" fill="#f43f5e">✕</text>
+    <text x="1485" y="434" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="11" font-weight="700" fill="#fda4af">Отклонена</text>
+    <text x="1485" y="450" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#4c0519">Не прошла оценку</text>
+    <circle cx="1432" cy="442" r="4" fill="#f43f5e" stroke="#0c0c14" stroke-width="2"/>
+  </g>
+
+  <!-- ── Footer ── -->
+  <text x="800" y="662" text-anchor="middle" font-family="'Inter','Segoe UI',system-ui,sans-serif" font-size="10" fill="#252538" letter-spacing="0.12em">COMPASS · MULTI-AGENT AI PIPELINE · B2B PRODUCT DISCOVERY</text>
+</svg>
