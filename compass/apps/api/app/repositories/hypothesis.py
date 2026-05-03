@@ -1,3 +1,4 @@
+import uuid as _uuid
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -16,8 +17,11 @@ class HypothesisRepository(BaseRepository[Hypothesis]):
         status: str | None = None,
         limit: int = 50,
         offset: int = 0,
+        org_id: _uuid.UUID | None = None,
     ) -> list[HypothesisRead]:
         q = select(Hypothesis)
+        if org_id is not None:
+            q = q.where(Hypothesis.organization_id == org_id)
         if domain:
             q = q.where(Hypothesis.domain == domain)
         if status:
@@ -27,8 +31,13 @@ class HypothesisRepository(BaseRepository[Hypothesis]):
         rows = result.scalars().all()
         return [HypothesisRead.model_validate(r) for r in rows]
 
-    async def create(self, data: HypothesisCreate) -> HypothesisRead:
-        h = Hypothesis(**data.model_dump())
+    async def create(
+        self,
+        data: HypothesisCreate,
+        org_id: _uuid.UUID | None = None,
+        created_by: str | None = None,
+    ) -> HypothesisRead:
+        h = Hypothesis(**data.model_dump(), organization_id=org_id, created_by=created_by)
         await self.save(h)
         return HypothesisRead.model_validate(h)
 

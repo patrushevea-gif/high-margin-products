@@ -10,6 +10,13 @@ class Signal(Base, UUIDPrimaryKey, TimestampMixin):
     """Raw signal discovered by Scout agent."""
     __tablename__ = "signals"
 
+    organization_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
+
     source_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("sources.id", ondelete="SET NULL"), index=True
     )

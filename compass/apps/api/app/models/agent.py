@@ -11,7 +11,14 @@ class AgentSettings(Base, UUIDPrimaryKey, TimestampMixin):
     """Per-agent configuration, versioned."""
     __tablename__ = "agent_settings"
 
-    agent_name: Mapped[str] = mapped_column(String(50), nullable=False, unique=True, index=True)
+    organization_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
+
+    agent_name: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
     display_name: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
 
@@ -34,6 +41,13 @@ class AgentSettings(Base, UUIDPrimaryKey, TimestampMixin):
 class AgentRun(Base, UUIDPrimaryKey, TimestampMixin):
     """One execution of an agent on a hypothesis or source."""
     __tablename__ = "agent_runs"
+
+    organization_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
 
     agent_name: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
     hypothesis_id: Mapped[uuid.UUID | None] = mapped_column(

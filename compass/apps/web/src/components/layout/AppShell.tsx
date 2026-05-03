@@ -5,9 +5,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, FlaskConical, Settings, Database,
-  GitBranch, Network, GitCompareArrows, Users2, Wand2, LogOut, Search
+  GitBranch, Network, GitCompareArrows, Users2, Wand2, LogOut, Search, Building2
 } from "lucide-react";
 import { CommandPalette } from "@/components/layout/CommandPalette";
+import { OrgSwitcher } from "@/components/layout/OrgSwitcher";
+import { OrgProvider } from "@/lib/org-context";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -22,6 +24,7 @@ const NAV = [
   { href: "/committee", label: "Комитет", icon: Users2 },
   { href: "/counterfactual", label: "А что если...", icon: Wand2 },
   { href: "/agents", label: "Агент-студия", icon: Settings },
+  { href: "/organizations", label: "Организация", icon: Building2 },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -36,6 +39,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   };
 
   return (
+    <OrgProvider>
     <div className="flex h-screen overflow-hidden" style={{ background: "var(--background)" }}>
       {/* Sidebar */}
       <aside
@@ -78,8 +82,13 @@ export function AppShell({ children }: { children: ReactNode }) {
           })}
         </nav>
 
+        {/* Org Switcher */}
+        <div className="px-2 pb-1 border-t pt-2" style={{ borderColor: "var(--border)" }}>
+          <OrgSwitcher />
+        </div>
+
         {/* Bottom */}
-        <div className="px-2 py-3 border-t space-y-0.5" style={{ borderColor: "var(--border)" }}>
+        <div className="px-2 py-2 space-y-0.5" style={{ borderColor: "var(--border)" }}>
           <button
             onClick={() => setCmdOpen(true)}
             className="flex items-center gap-2 px-2.5 py-2 rounded text-sm w-full transition-colors hover:bg-background-raised"
@@ -112,5 +121,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} />
     </div>
+    </OrgProvider>
   );
 }

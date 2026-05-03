@@ -92,6 +92,8 @@ class HypothesisRead(BaseModel):
     model_config = {"from_attributes": True}
 
     id: UUID
+    organization_id: UUID | None = None
+    created_by: str | None = None
     title: str
     short_description: str
     long_description: str | None

@@ -1,4 +1,6 @@
-from sqlalchemy import String, Text, Boolean, Integer, JSON, DateTime, Float
+import uuid
+from sqlalchemy import String, Text, Boolean, Integer, JSON, DateTime, Float, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 from app.core.database import Base
@@ -8,6 +10,13 @@ from app.models.base import TimestampMixin, UUIDPrimaryKey
 class Source(Base, UUIDPrimaryKey, TimestampMixin):
     """Data source definition — patents, news, scientific, competitors, etc."""
     __tablename__ = "sources"
+
+    organization_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
 
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     url_pattern: Mapped[str | None] = mapped_column(String(2000))

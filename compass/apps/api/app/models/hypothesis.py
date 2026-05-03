@@ -10,6 +10,14 @@ from app.models.base import TimestampMixin, UUIDPrimaryKey
 class Hypothesis(Base, UUIDPrimaryKey, TimestampMixin):
     __tablename__ = "hypotheses"
 
+    organization_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
+    created_by: Mapped[str | None] = mapped_column(String(255))
+
     title: Mapped[str] = mapped_column(String(500), nullable=False)
     short_description: Mapped[str] = mapped_column(Text, nullable=False)
     long_description: Mapped[str | None] = mapped_column(Text)

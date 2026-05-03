@@ -1,17 +1,18 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, Query, BackgroundTasks
+from fastapi import APIRouter, Depends, Query, BackgroundTasks, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 import json
+from app.core.auth import CurrentUser, get_current_user
 from app.core.database import get_db
 from app.core.redis import get_arq_pool
 from app.schemas.hypothesis import HypothesisRead, HypothesisCreate, HypothesisUpdate
 from app.repositories.hypothesis import HypothesisRepository
 from app.services.integrations.obsidian import get_obsidian
 from app.services.integrations.bitrix24 import get_bitrix24
-from app.models.hypothesis import HypothesisEvaluation
+from app.models.hypothesis import Hypothesis, HypothesisEvaluation
 from app.services.ai_gateway import get_gateway
 
 router = APIRouter()
@@ -23,22 +24,36 @@ async def list_hypotheses(
     status: str | None = None,
     limit: int = Query(50, le=200),
     offset: int = 0,
+    user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> list[HypothesisRead]:
     repo = HypothesisRepository(db)
-    return await repo.list(domain=domain, status=status, limit=limit, offset=offset)
+    return await repo.list(
+        domain=domain, status=status, limit=limit, offset=offset,
+        org_id=user.org_id,
+    )
 
 
 @router.post("/", response_model=HypothesisRead, status_code=201)
-async def create_hypothesis(body: HypothesisCreate, db: AsyncSession = Depends(get_db)) -> HypothesisRead:
+async def create_hypothesis(
+    body: HypothesisCreate,
+    user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> HypothesisRead:
     repo = HypothesisRepository(db)
-    return await repo.create(body)
+    return await repo.create(body, org_id=user.org_id, created_by=user.user_id)
 
 
 @router.get("/{hypothesis_id}", response_model=HypothesisRead)
-async def get_hypothesis(hypothesis_id: UUID, db: AsyncSession = Depends(get_db)) -> HypothesisRead:
+async def get_hypothesis(
+    hypothesis_id: UUID,
+    user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> HypothesisRead:
     repo = HypothesisRepository(db)
-    return await repo.get_or_404(hypothesis_id)
+    h = await repo.get_or_404(hypothesis_id)
+    _assert_org_access(h, user)
+    return h
 
 
 @router.patch("/{hypothesis_id}", response_model=HypothesisRead)
@@ -46,24 +61,37 @@ async def update_hypothesis(
     hypothesis_id: UUID,
     body: HypothesisUpdate,
     background_tasks: BackgroundTasks,
+    user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> HypothesisRead:
     repo = HypothesisRepository(db)
+    h = await repo.get_or_404(hypothesis_id)
+    _assert_org_access(h, user)
     result = await repo.update(hypothesis_id, body)
     if body.status == "accepted":
         background_tasks.add_task(_on_accepted, result.model_dump())
     return result
 
 
+def _assert_org_access(h: HypothesisRead, user: CurrentUser) -> None:
+    """Raise 403 if the hypothesis belongs to a different org."""
+    import uuid as _uuid
+    h_org = h.organization_id if hasattr(h, "organization_id") else None
+    if h_org is not None and user.org_id is not None and h_org != user.org_id:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+
 async def _on_accepted(h: dict) -> None:
-    """Export to Obsidian + create Bitrix24 task when hypothesis is accepted."""
     await get_obsidian().export_hypothesis(h)
     await get_bitrix24().create_task_from_hypothesis(h)
 
 
 @router.get("/{hypothesis_id}/evaluations")
-async def list_evaluations(hypothesis_id: UUID, db: AsyncSession = Depends(get_db)) -> list[dict]:
-    """Return immutable Time Machine snapshots for this hypothesis."""
+async def list_evaluations(
+    hypothesis_id: UUID,
+    user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[dict]:
     result = await db.execute(
         select(HypothesisEvaluation)
         .where(HypothesisEvaluation.hypothesis_id == hypothesis_id)
@@ -84,11 +112,11 @@ async def list_evaluations(hypothesis_id: UUID, db: AsyncSession = Depends(get_d
 
 
 AGENT_PERSONAS: dict[str, str] = {
-    "synthesizer": "Ты Синтезатор — старший продуктовый аналитик. Отвечаешь кратко, по делу, на русском.",
+    "synthesizer":     "Ты Синтезатор — старший продуктовый аналитик. Отвечаешь кратко, по делу, на русском.",
     "devils_advocate": "Ты Адвокат Дьявола — критически атакуешь идеи, ищешь слабые места. Отвечаешь на русском.",
-    "market_analyst": "Ты Рыночный Аналитик — эксперт по рынкам ЛКМ и смежным. Отвечаешь на русском.",
-    "economist": "Ты Экономист — эксперт по юнит-экономике и финансовому моделированию. Отвечаешь на русском.",
-    "tech_analyst": "Ты Технический Аналитик — эксперт по производственной реализуемости. Отвечаешь на русском.",
+    "market_analyst":  "Ты Рыночный Аналитик — эксперт по рынкам ЛКМ и смежным. Отвечаешь на русском.",
+    "economist":       "Ты Экономист — эксперт по юнит-экономике и финансовому моделированию. Отвечаешь на русском.",
+    "tech_analyst":    "Ты Технический Аналитик — эксперт по производственной реализуемости. Отвечаешь на русском.",
 }
 
 
@@ -102,10 +130,12 @@ class ChatRequest(BaseModel):
 async def chat_with_agent(
     hypothesis_id: UUID,
     body: ChatRequest,
+    user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> StreamingResponse:
     repo = HypothesisRepository(db)
     h = await repo.get_or_404(hypothesis_id)
+    _assert_org_access(h, user)
     h_dict = h.model_dump()
 
     persona = AGENT_PERSONAS.get(body.agent, AGENT_PERSONAS["synthesizer"])
@@ -120,7 +150,6 @@ async def chat_with_agent(
         f"Риски: {json.dumps(h_dict.get('risks'), ensure_ascii=False)}"
     )
     system = f"{persona}\n\nКонтекст гипотезы:\n{context}"
-
     messages = list(body.history) + [{"role": "user", "content": body.message}]
     gateway = get_gateway()
 
@@ -145,27 +174,27 @@ class CompareSummaryRequest(BaseModel):
 @router.post("/compare/summary")
 async def compare_summary(
     body: CompareSummaryRequest,
+    user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, str]:
-    """Generate an AI analytical summary comparing 2-5 hypotheses."""
     if len(body.hypothesis_ids) < 2:
-        from fastapi import HTTPException
         raise HTTPException(status_code=400, detail="Need at least 2 hypotheses to compare")
     if len(body.hypothesis_ids) > 5:
-        from fastapi import HTTPException
         raise HTTPException(status_code=400, detail="Maximum 5 hypotheses per comparison")
 
     from sqlalchemy import text as sql_text
-    r = await db.execute(
-        sql_text(
-            "SELECT id, title, status, overall_score, confidence_score, "
-            "technical, market, economics, risks FROM hypotheses WHERE id = ANY(:ids)"
-        ),
-        {"ids": body.hypothesis_ids},
+    query = (
+        "SELECT id, title, status, overall_score, confidence_score, "
+        "technical, market, economics, risks FROM hypotheses WHERE id = ANY(:ids)"
     )
+    params: dict = {"ids": body.hypothesis_ids}
+    if user.org_id is not None:
+        query += " AND organization_id = :org_id"
+        params["org_id"] = str(user.org_id)
+
+    r = await db.execute(sql_text(query), params)
     hypotheses = [dict(row) for row in r.mappings().all()]
     if not hypotheses:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="No hypotheses found")
 
     gateway = get_gateway()
@@ -189,10 +218,14 @@ async def compare_summary(
 
 
 @router.post("/{hypothesis_id}/advance")
-async def advance_stage(hypothesis_id: UUID, db: AsyncSession = Depends(get_db)) -> dict[str, str]:
-    """Enqueue hypothesis for full pipeline evaluation via arq worker."""
+async def advance_stage(
+    hypothesis_id: UUID,
+    user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, str]:
     repo = HypothesisRepository(db)
     h = await repo.get_or_404(hypothesis_id)
+    _assert_org_access(h, user)
     try:
         arq = await get_arq_pool()
         job = await arq.enqueue_job(

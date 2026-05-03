@@ -1,9 +1,18 @@
+import { getOrgId } from "@/lib/org-context";
+
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
+function buildHeaders(extra?: HeadersInit): HeadersInit {
+  const orgId = getOrgId();
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (orgId) headers["X-Organization-Id"] = orgId;
+  return { ...headers, ...(extra as Record<string, string> | undefined) };
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}/api/v1${path}`, {
-    headers: { "Content-Type": "application/json", ...init?.headers },
     ...init,
+    headers: buildHeaders(init?.headers),
   });
   if (!res.ok) {
     const err = await res.text();
